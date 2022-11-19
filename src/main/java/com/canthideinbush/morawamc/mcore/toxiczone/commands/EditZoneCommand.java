@@ -13,10 +13,11 @@ import java.util.stream.Collectors;
 public class EditZoneCommand extends ParentCommand {
 
     public EditZoneCommand() {
-        subCommands.add(new AddRegionCommand());
-        subCommands.add(new RemoveRegionCommand());
+        subCommands.add(new SetCenterCommand());
         subCommands.add(new SetIntervalCommand());
         subCommands.add(new SetDamageCommand());
+        subCommands.add(new SetStartRadiusCommand());
+        subCommands.add(new SetEndRadiusCommand());
     }
 
 

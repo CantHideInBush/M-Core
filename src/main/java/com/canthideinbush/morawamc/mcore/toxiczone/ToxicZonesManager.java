@@ -6,6 +6,7 @@ import com.canthideinbush.utils.managers.KeyedStorage;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,28 +36,30 @@ public class ToxicZonesManager implements KeyedStorage<ToxicZone> {
 
     public void load() {
         MCore.getInstance().getToxicZonesStorage().getList("ToxicZones", Collections.emptyList()).forEach(tZ -> this.register((ToxicZone) tZ));
+        ArrayList<ToxicZone> toRemove = new ArrayList<>();
+        for (ToxicZone zone : objects) {
+            if (zone.center == null) {
+                toRemove.add(zone);
+                MCore.getInstance().getLogger().info("Removing legacy toxic zone: " + zone.getKey());
+            }
+        }
+        toRemove.forEach(this::unregister);
     }
 
     public List<ToxicZone> getByWorld(World world) {
-        return objects.stream().filter(tZ -> tZ.world.equals(world)).collect(Collectors.toList());
-    }
-
-    public ToxicZone getByRegion(World world, String id) {
-        return objects.stream().filter(tZ -> tZ.world.equals(world) && tZ.regions.contains(id)).findAny().orElse(null);
-    }
-
-    public ToxicZone getByRegion(Location world, String id) {
-        return objects.stream().filter(tZ -> tZ.world.equals(world.getWorld()) && tZ.regions.contains(id)).findAny().orElse(null);
-    }
-
-    public ToxicZone getByLocation(Location location) {
-        ProtectedRegion region = WorldGuardUtils.getHighestPriorityRegion(location);
-        if (region == null) return null;
-        else return getByRegion(location.getWorld(), region.getId());
+        return objects.stream().filter(tZ -> tZ.center.getWorld().equals(world)).collect(Collectors.toList());
     }
 
     public List<String> getIdList() {
         return objects.stream().map(ToxicZone::getKey).collect(Collectors.toList());
+    }
+
+    public static boolean isSafe(Player player) {
+        for (ToxicZone zone : MCore.getInstance().getToxicZonesManager().getByWorld(player.getWorld())) {
+            double distance = player.getLocation().distance(zone.center);
+            if (distance >= zone.startRadius && distance < zone.endRadius) return false;
+        }
+        return true;
     }
 
 }

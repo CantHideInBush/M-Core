@@ -4,14 +4,15 @@ import com.canthideinbush.morawamc.mcore.MCore;
 import com.canthideinbush.morawamc.mcore.toxiczone.ToxicZone;
 import com.canthideinbush.utils.storing.ArgParser;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
 
-public class AddRegionCommand extends EditZoneSubCommand {
+public class SetCenterCommand extends EditZoneSubCommand {
 
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public boolean execute(Player sender, String[] args) {
 
 
         ArgParser parser = new ArgParser(args, getArgIndex());
@@ -21,31 +22,23 @@ public class AddRegionCommand extends EditZoneSubCommand {
             return false;
         }
 
-        String id = parser.next();
-
         ToxicZone zone = getZone(args);
-        if (MCore.getInstance().getToxicZonesManager().getByRegion(zone.world, id) != null) {
-            sendConfigErrorMessage(sender, "commands.toxic-zone.edit.add-region.taken");
-            return false;
-        }
+        zone.center = sender.getLocation();
 
-        zone.regions.add(id);
-        sendConfigSuccessMessage(sender, "commands.toxic-zone.edit.add-region.success");
+
+        sendConfigSuccessMessage(sender, "commands.toxic-zone.edit.set-center.success");
 
         return true;
     }
 
     @Override
     public String getName() {
-        return "addregion";
+        return "setcenter";
     }
 
 
     @Override
     public List<String> complete(String[] args) {
-        if (args.length - 1 == getArgIndex()) {
-            return Collections.singletonList(" ");
-        }
         return Collections.emptyList();
     }
 }

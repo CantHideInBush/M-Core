@@ -18,16 +18,17 @@ commands:
     remove:
       success: "Pomyslnie usunieto strefe."
     edit:
-      add-region:
+      set-center:
         taken: "Inna strefa w tym swiecie uzywa juz tego regionu!"
         success: "Pomyslnie dodano region do strefy."
-      remove-region:
-        region-nonexistent: "Region nie jest dodany do podanej strefy"
-        success: "Pomyslnie usunieto region."
       set-interval:
         success: "Ustawiono interwal na %s"
       set-damage:
         success: "Ustawiono obrazenia na %s"
+      set-start-radius:
+        success: "Ustawiono srednice poczatku strefy na %s"
+      set-end-radius:
+        success: "Ustawiono srednice konca strefy na %s"
     add-potion-tag:
       duration-required: "Musisz podac dlugosc trwania mikstury w sekundach!"
       success: "Dodano tag NBT."

@@ -40,22 +40,23 @@ public class ToxicZoneHandler implements Listener {
         task = Bukkit.getScheduler().runTaskTimer(MCore.getInstance(), () -> {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                ToxicZone zone;
-                if ((zone = MCore.getInstance().getToxicZonesManager().getByLocation(player.getLocation())) != null) {
-                    AntiRadiationPotionEffect effect = antiRadiationPotionEffectByPlayer(player);
-                    if (effect == null && tick % zone.interval == 0) {
-                        player.damage(zone.damage);
-                        player.setNoDamageTicks(zone.interval);
-                        player.addPotionEffect(new PotionEffect(tick % (zone.interval * 2) == 0 ? PotionEffectType.WITHER : PotionEffectType.POISON, zone.interval, 0));
-                    }
-                    if (effect != null) {
-                        if (!bossBar.getPlayers().contains(player)) effect.getBossBar().removePlayer(player);
-                        else if (!effect.isRemoved()) effect.getBossBar().addPlayer(player);
-                    }
-                    bossBar.addPlayer(player);
+                for (ToxicZone zone : MCore.getInstance().getToxicZonesManager().getByWorld(player.getWorld())) {
+                    double distance = player.getLocation().distance(zone.center);
+                    if (distance >= zone.startRadius && distance < zone.endRadius) {
+                        AntiRadiationPotionEffect effect = antiRadiationPotionEffectByPlayer(player);
+                        if (effect == null && tick % zone.interval == 0) {
+                            player.damage(zone.damage);
+                            player.setNoDamageTicks(zone.interval);
+                            player.addPotionEffect(new PotionEffect(tick % (zone.interval * 2) == 0 ? PotionEffectType.WITHER : PotionEffectType.POISON, zone.interval, 0));
+                        }
+                        if (effect != null) {
+                            if (!bossBar.getPlayers().contains(player)) effect.getBossBar().removePlayer(player);
+                            else if (!effect.isRemoved()) effect.getBossBar().addPlayer(player);
+                        }
+                        bossBar.addPlayer(player);
 
+                    } else bossBar.removePlayer(player);
                 }
-                else bossBar.removePlayer(player);
             }
 
             tick++;
@@ -77,7 +78,7 @@ public class ToxicZoneHandler implements Listener {
             Player player = (Player) event.getEntity();
             if ((event.getCause().equals(EntityDamageEvent.DamageCause.WITHER)
              || event.getCause().equals(EntityDamageEvent.DamageCause.POISON))
-             && MCore.getInstance().getToxicZonesManager().getByLocation(player.getLocation()) != null) {
+             && !ToxicZonesManager.isSafe(player)) {
                 event.setCancelled(true);
             }
 
