@@ -12,7 +12,7 @@ public class ReloadCommand extends InternalCommand {
     @Override
     public boolean execute(ConsoleCommandSender sender, String[] args) {
 
-        MCore.getInstance().reload();
+        MCore.instance().reload();
 
         sendConfigSuccessMessage(sender, "commands-reload-success");
 

@@ -32,7 +32,7 @@ public class EditZoneCommand extends ParentCommand {
         }
 
 
-        if (MCore.getInstance().getToxicZonesManager().findByKey(parser.next()) == null) {
+        if (MCore.instance().getToxicZonesManager().findByKey(parser.next()) == null) {
             sendConfigErrorMessage(sender, "common.zone-nonexistent");
             return false;
         }
@@ -65,7 +65,7 @@ public class EditZoneCommand extends ParentCommand {
     public List<String> complete(String[] args) {
 
         if (args.length - 1 == getArgIndex()) {
-            return MCore.getInstance().getToxicZonesManager().getIdList();
+            return MCore.instance().getToxicZonesManager().getIdList();
         }
         else if (args.length - 1 == getArgIndex() + 1) {
             return getSubcommands().stream().map(InternalCommand::getName).collect(Collectors.toList());

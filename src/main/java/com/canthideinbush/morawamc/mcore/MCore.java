@@ -7,12 +7,12 @@ import com.canthideinbush.morawamc.mcore.marriage.MarriagePlaceholder;
 import com.canthideinbush.morawamc.mcore.toxiczone.ToxicZone;
 import com.canthideinbush.morawamc.mcore.toxiczone.ToxicZoneHandler;
 import com.canthideinbush.morawamc.mcore.toxiczone.ToxicZonesManager;
+import com.canthideinbush.morawamc.mcore.worldspawns.TeleportListener;
 import com.canthideinbush.utils.CHIBPlugin;
 import com.canthideinbush.utils.storing.YAMLConfig;
-import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MCore extends CHIBPlugin {
 
@@ -21,12 +21,13 @@ public final class MCore extends CHIBPlugin {
         ConfigurationSerialization.registerClass(Gender.class);
     }
     private static MCore instance;
-    public static MCore getInstance() {
+    public static MCore instance() {
         return instance;
     }
 
     private YAMLConfig messagesConfig;
     private YAMLConfig toxicZonesStorage;
+    private YAMLConfig worldSpawnsStorage;
 
     private YAMLConfig genderStorage;
 
@@ -47,6 +48,8 @@ public final class MCore extends CHIBPlugin {
         new MarriagePlaceholder().register();
         new GenderPlaceholder().register();
 
+        Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
+
     }
 
     @Override
@@ -62,12 +65,14 @@ public final class MCore extends CHIBPlugin {
         messagesConfig = new YAMLConfig(this, "messages", true);
         toxicZonesStorage = new YAMLConfig(this, "toxicZones", false);
         genderStorage = new YAMLConfig(this, "genders", false);
+        worldSpawnsStorage = new YAMLConfig(this, "worldspawns");
     }
 
     private void saveConfigurations() {
         messagesConfig.save();
         toxicZonesStorage.save();
         genderStorage.save();
+        worldSpawnsStorage.save();
     }
 
     private void loadManagers() {
@@ -99,6 +104,10 @@ public final class MCore extends CHIBPlugin {
 
     public ToxicZoneHandler getToxicZoneHandler() {
         return toxicZoneHandler;
+    }
+
+    public YAMLConfig worldSpawnsStorage() {
+        return worldSpawnsStorage;
     }
 
     public YAMLConfig getGenderStorage() {

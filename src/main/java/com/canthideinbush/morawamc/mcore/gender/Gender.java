@@ -37,31 +37,31 @@ public class Gender implements ABSave  {
 
 
     public void save() {
-        MCore.getInstance().getGenderStorage().set("Genders." + name, this);
+        MCore.instance().getGenderStorage().set("Genders." + name, this);
     }
     public void remove() {
-        MCore.getInstance().getGenderStorage().set("Genders." + name, null);
+        MCore.instance().getGenderStorage().set("Genders." + name, null);
     }
 
     public static Gender getByName(String name) {
         if (name == null) return null;
-        Gender gender = MCore.getInstance().getGenderStorage().getObject("Genders." + name, Gender.class);
+        Gender gender = MCore.instance().getGenderStorage().getObject("Genders." + name, Gender.class);
         if (gender != null) gender.name = name;
         return gender;
     }
 
     public static List<String> getNameList() {
-        ConfigurationSection section = MCore.getInstance().getGenderStorage().getConfigurationSection("Genders");
+        ConfigurationSection section = MCore.instance().getGenderStorage().getConfigurationSection("Genders");
         if (section == null) return Collections.emptyList();
         return new ArrayList<>(section.getKeys(false));
     }
 
     public static void setGender(Player player, String gender) {
-        MCore.getInstance().getGenderStorage().set("Players." + player.getName(), gender);
+        MCore.instance().getGenderStorage().set("Players." + player.getName(), gender);
     }
 
     public static  Gender getGender(String player) {
-        return getByName(MCore.getInstance().getGenderStorage().getString("Players." + player, null));
+        return getByName(MCore.instance().getGenderStorage().getString("Players." + player, null));
     }
 
 

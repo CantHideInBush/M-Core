@@ -22,13 +22,13 @@ public class RemoveCommand extends InternalCommand {
         }
 
         ToxicZone zone;
-        if ((zone = MCore.getInstance().getToxicZonesManager().findByKey(parser.next())) == null) {
+        if ((zone = MCore.instance().getToxicZonesManager().findByKey(parser.next())) == null) {
             sendConfigErrorMessage(sender, "common.zone-nonexistent");
             return false;
         }
 
 
-        MCore.getInstance().getToxicZonesManager().unregister(zone);
+        MCore.instance().getToxicZonesManager().unregister(zone);
 
         sendConfigSuccessMessage(sender, "commands.toxic-zone.remove.success");
 
@@ -48,7 +48,7 @@ public class RemoveCommand extends InternalCommand {
     @Override
     public List<String> complete(String[] args) {
         if (args.length - 1 == getArgIndex()) {
-            return MCore.getInstance().getToxicZonesManager().getIdList();
+            return MCore.instance().getToxicZonesManager().getIdList();
         }
         return Collections.emptyList();
     }

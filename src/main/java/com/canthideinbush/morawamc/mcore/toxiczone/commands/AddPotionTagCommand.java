@@ -39,7 +39,7 @@ public class AddPotionTagCommand extends InternalCommand  {
         }
 
         ItemMeta meta = stack.getItemMeta();
-        meta.getPersistentDataContainer().set(new NamespacedKey(MCore.getInstance(), "AntiRadiationDuration"), PersistentDataType.DOUBLE, duration * 20);
+        meta.getPersistentDataContainer().set(new NamespacedKey(MCore.instance(), "AntiRadiationDuration"), PersistentDataType.DOUBLE, duration * 20);
         stack.setItemMeta(meta);
         sendConfigSuccessMessage(sender, "commands.toxic-zone.add-potion-tag.success");
         return true;

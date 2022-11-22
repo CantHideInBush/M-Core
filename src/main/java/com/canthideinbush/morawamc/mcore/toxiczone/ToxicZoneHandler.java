@@ -3,6 +3,7 @@ package com.canthideinbush.morawamc.mcore.toxiczone;
 import com.canthideinbush.morawamc.mcore.MCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -35,14 +36,18 @@ public class ToxicZoneHandler implements Listener {
     private final ArrayList<AntiRadiationPotionEffect> antiRadiation = new ArrayList<>();
 
     public ToxicZoneHandler() {
-        Bukkit.getPluginManager().registerEvents(this, MCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(this, MCore.instance());
         bossBar = Bukkit.createBossBar(ChatColor.RED + "Strefa Skażenia", BarColor.RED, BarStyle.SEGMENTED_20);
-        task = Bukkit.getScheduler().runTaskTimer(MCore.getInstance(), () -> {
+        task = Bukkit.getScheduler().runTaskTimer(MCore.instance(), () -> {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                for (ToxicZone zone : MCore.getInstance().getToxicZonesManager().getByWorld(player.getWorld())) {
-                    double distance = player.getLocation().distance(zone.center);
-                    if (distance >= zone.startRadius && distance < zone.endRadius) {
+                for (ToxicZone zone : MCore.instance().getToxicZonesManager().getByWorld(player.getWorld())) {
+                    Location loc = player.getLocation();
+                    loc.setY(0);
+                    Location zoneCenter = zone.center.clone();
+                    zoneCenter.setY(0);
+                    double distance = loc.distance(zoneCenter);
+                    if (distance >= zone.startRadius && distance < zone.endRadius && zone.center.getWorld().equals(player.getWorld())) {
                         AntiRadiationPotionEffect effect = antiRadiationPotionEffectByPlayer(player);
                         if (effect == null && tick % zone.interval == 0) {
                             player.damage(zone.damage);
@@ -61,7 +66,7 @@ public class ToxicZoneHandler implements Listener {
 
             tick++;
         }, 0, 1);
-        asyncTask = Bukkit.getScheduler().runTaskTimerAsynchronously(MCore.getInstance(), () -> {
+        asyncTask = Bukkit.getScheduler().runTaskTimerAsynchronously(MCore.instance(), () -> {
             Iterator<AntiRadiationPotionEffect> iterator = antiRadiation.iterator();
             AntiRadiationPotionEffect antiRadiation;
             while (iterator.hasNext()) {
@@ -111,8 +116,8 @@ public class ToxicZoneHandler implements Listener {
 
     private double getAntiRadiationDuration(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        return meta.getPersistentDataContainer().has(new NamespacedKey(MCore.getInstance(), "AntiRadiationDuration")) ?
-                meta.getPersistentDataContainer().get(new NamespacedKey(MCore.getInstance(), "AntiRadiationDuration"), PersistentDataType.DOUBLE) : 0;
+        return meta.getPersistentDataContainer().has(new NamespacedKey(MCore.instance(), "AntiRadiationDuration")) ?
+                meta.getPersistentDataContainer().get(new NamespacedKey(MCore.instance(), "AntiRadiationDuration"), PersistentDataType.DOUBLE) : 0;
     }
 
 

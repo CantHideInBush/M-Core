@@ -42,3 +42,7 @@ commands:
     set:
       gender-nonexistent: "Podana plec nie znajduje sie w naszej bazie danych."
       success: "Pomyslnie ustawiono plec."
+  set-world-spawn:
+    success: "Pomyslnie ustawiono spawn swiata"
+  remove-world-spawn:
+    success: "Pomyslnie usunieto spawn swiata"

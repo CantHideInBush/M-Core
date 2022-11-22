@@ -20,7 +20,7 @@ public class GenderPlaceholder extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return MCore.getInstance().getDescription().getVersion();
+        return MCore.instance().getDescription().getVersion();
     }
 
     @Override
